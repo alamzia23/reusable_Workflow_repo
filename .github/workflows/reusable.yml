@@ -1,16 +1,38 @@
-name: Reusable Workflow
+name: Reusable Workflow 1
 
 on:
   workflow_call:
-    inputs:
-      greeting:
-        description: 'The greeting to print'
-        required: true
+    
 
 jobs:
   reusable-job:
     runs-on: ubuntu-latest
 
     steps:
-      - run: |
-          echo "Hello, ${{ inputs.greeting }}!"
+      - uses: action/checkout@v3
+
+      - name: Write something to log
+        run: |
+           echo : "Hello my name is Alam"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
