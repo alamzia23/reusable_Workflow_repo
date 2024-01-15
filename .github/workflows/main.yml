@@ -1,0 +1,80 @@
+name: Check for TESTED comments in closed pull requests
+
+on:
+  workflow_call:
+    inputs:
+      token:
+        description: 'GitHub token to use for API calls'
+        required: true
+        default: ${{ github.token }}
+
+jobs:
+  check-for-tested-comments:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get closed pull requests
+        uses: actions/github-script@v1
+        with:
+          script: |
+            const octokit = require('@octokit/rest');
+            const github = new octokit({
+              auth: ${{ inputs.token }}
+            });
+
+            const getClosedPullRequests = async () => {
+              const response = await github.pulls.list({
+                owner: ${{ github.repository.owner.login }},
+                repo: ${{ github.repository.name }},
+                state: 'closed'
+              });
+
+              return response.data;
+            };
+
+            const getPullRequestComments = async (pull_request_id) => {
+              const response = await github.issues.listComments({
+                owner: ${{ github.repository.owner.login }},
+                repo: ${{ github.repository.name }},
+                issue_number: pull_request_id
+              });
+
+              return response.data;
+            };
+
+            const hasTestedComment = (comments) => {
+              return comments.some((comment) => {
+                return comment.body.toLowerCase().includes('tested');
+              });
+            };
+
+            const main = async () => {
+              const closedPullRequests = await getClosedPullRequests();
+
+              const pullRequestsWithTestedComments = [];
+
+              for (const pull_request of closedPullRequests) {
+                const comments = await getPullRequestComments(pull_request.id);
+
+                if (hasTestedComment(comments)) {
+                  pullRequestsWithTestedComments.push(pull_request);
+                }
+              }
+
+              console.log(`Pull requests with TESTED comments:`);
+              console.log(pullRequestsWithTestedComments);
+              
+              // Set outputs for clarity and potential downstream usage
+              core.setOutput('has_tested_comments', pullRequestsWithTestedComments.length > 0);
+              core.setOutput('pull_requests_with_tested_comments', pullRequestsWithTestedComments);
+            };
+
+            main();
+
+      - name: List pull requests with TESTED comments (optional)
+        if: ${{ steps.check-for-tested-comments.outputs.has_tested_comments }}
+        run: |
+          echo "Pull requests with TESTED comments:"
+          echo ${{ steps.check-for-tested-comments.outputs.pull_requests_with_tested_comments }}
