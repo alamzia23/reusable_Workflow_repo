@@ -6,7 +6,7 @@ on:
       greeting:
         description: 'The greeting to print'
         required: true
-      
+
 jobs:
   reusable-job:
     runs-on: ubuntu-latest
