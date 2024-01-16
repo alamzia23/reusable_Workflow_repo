@@ -13,7 +13,7 @@ jobs:
 
       - name: Write something to log
         run: |
-           echo : "Hello my name is Alam"
+           echo : "Hello I am the test Case"
 
 
 
