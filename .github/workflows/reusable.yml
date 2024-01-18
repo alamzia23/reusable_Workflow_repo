@@ -7,10 +7,6 @@ jobs:
   reusable-job:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -27,13 +23,11 @@ jobs:
         run: npm test
 
       - name: Deploy
-        if: matrix.os == 'ubuntu-latest'
         run: echo "Deploying on Ubuntu"
 
       - name: Log additional information
         run: |
           echo "This is an advanced step."
-          echo "Operating System: ${{ matrix.os }}"
           echo "Branch: ${{ github.event.inputs.branch || github.event.ref }}"
 
       - name: Upload artifact
