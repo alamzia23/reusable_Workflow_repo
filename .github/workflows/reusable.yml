@@ -20,4 +20,4 @@ jobs:
 
       # Step 4: Print the contents of a file (optional)
       - name: Print file contents
-        run: cat tREADME.md  # Replace with the desired file path
+        run: cat README.md  # Replace with the desired file path
