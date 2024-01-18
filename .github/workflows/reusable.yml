@@ -1,40 +1,23 @@
-name: Reusable Workflow - Less Advanced
+name: Reusable Workflow 1
 
 on:
   workflow_call:
-  push:
-    branches: [main]  # Trigger on pushes to the main branch
 
 jobs:
   reusable-job:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'  # Specify your desired Node.js version
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Execute your Node.js script
+      - name: Write something to log
         run: |
-          node script.js  # Replace with your actual script path
-          # Or:
-          # npm run simple-task  # Replace with your specific task command
+          echo "Hello I am the test Case"
 
-      - name: Write something useful to log
-        run: echo "Node.js script completed successfully!"
+      # Step 3: Print the current date and time
+      - name: Print date and time
+        run: date
 
-      - name: Optionally output information (simplified)
-        run: |
-          echo "Script output: ${{ steps.execute-your-node-js-script.outputs.script-output }}"  # Replace with relevant output
-        id: optionally-output-information  # Add a unique ID to reference this step
-        continue-on-error: true  # Continue even if this step fails
-
-    outputs:
-      script-output: ${{ needs.reusable-job.outputs.script-output }}
+      # Step 4: Print the contents of a file (optional)
+      - name: Print file contents
+        run: cat README.md  # Replace with the desired file path
