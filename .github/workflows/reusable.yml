@@ -2,36 +2,34 @@ name: Reusable Workflow 1
 
 on:
   workflow_call:
+  push:
+    branches: [main]  # Trigger on pushes to the main branch
 
 jobs:
   reusable-job:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'  # Specify your desired Node.js version
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Run tests
-        run: npm test
+      # Replace with the actual task steps, utilizing Node.js
+      - name: Perform Node.js task
+        run: npm run my-task
 
-      - name: Deploy
-        run: echo "Deploying on Ubuntu"
-
-      - name: Log additional information
+      - name: Output results (optional)
+        id: output-results
         run: |
-          echo "This is an advanced step."
-          echo "Branch: ${{ github.event.inputs.branch || github.event.ref }}"
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: test-results
-          path: test-results
+          # Generate results or artifacts
+          echo "Results: $RESULTS"
+          echo "Artifacts: $ARTIFACTS"
+        outputs:
+          results: ${{ steps.output-results.outputs.RESULTS }}
+          artifacts: ${{ steps.output-results.outputs.ARTIFACTS }}
