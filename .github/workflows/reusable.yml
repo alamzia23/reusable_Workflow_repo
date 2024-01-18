@@ -12,7 +12,7 @@ jobs:
 
       - name: Write something to log
         run: |
-          echo "Hello I am the test Case"
+          echo "Running the reusbale workflow..."
 
       # Step 3: Print the current date and time
       - name: Print date and time
