@@ -2,37 +2,42 @@ name: Reusable Workflow 1
 
 on:
   workflow_call:
-    
 
 jobs:
   reusable-job:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Write something to log
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Deploy
+        if: matrix.os == 'ubuntu-latest'
+        run: echo "Deploying on Ubuntu"
+
+      - name: Log additional information
         run: |
-           echo : "Hello I am the test Case"
+          echo "This is an advanced step."
+          echo "Operating System: ${{ matrix.os }}"
+          echo "Branch: ${{ github.event.inputs.branch || github.event.ref }}"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: test-results
